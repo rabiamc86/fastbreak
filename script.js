@@ -1,368 +1,159 @@
-// Basketball Brothers - JavaScript
-
-// Smooth scrolling for navigation links
-document.querySelectorAll('nav a').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('href').substring(1);
-        const targetSection = document.getElementById(targetId);
-
-        if (targetSection) {
-            targetSection.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Update active nav link
-        document.querySelectorAll('nav a').forEach(link => link.classList.remove('active'));
-        this.classList.add('active');
-    });
-});
-
-// Photo filter functionality
-const filterButtons = document.querySelectorAll('.filter-btn');
-const photoItems = document.querySelectorAll('.photo-item');
-
-filterButtons.forEach(button => {
-    button.addEventListener('click', function() {
-        // Update active button
-        filterButtons.forEach(btn => btn.classList.remove('active'));
-        this.classList.add('active');
-
-        const filter = this.getAttribute('data-filter');
-
-        // Filter photos
-        photoItems.forEach(item => {
-            if (filter === 'all' || item.getAttribute('data-category') === filter) {
-                item.style.display = 'block';
-                setTimeout(() => {
-                    item.style.opacity = '1';
-                    item.style.transform = 'scale(1)';
-                }, 10);
-            } else {
-                item.style.opacity = '0';
-                item.style.transform = 'scale(0.8)';
-                setTimeout(() => {
-                    item.style.display = 'none';
-                }, 300);
-            }
-        });
-    });
-});
-
-// Lightbox functionality
-const lightbox = document.getElementById('lightbox');
-const lightboxImg = document.getElementById('lightbox-img');
-const lightboxCaption = document.getElementById('lightbox-caption');
-const closeLightbox = document.querySelector('.close-lightbox');
-
-// Add click event to all photo items
-photoItems.forEach(item => {
-    item.addEventListener('click', function() {
-        const img = this.querySelector('img');
-        const overlay = this.querySelector('.photo-overlay');
-
-        lightbox.classList.add('active');
-        lightboxImg.src = img.src;
-
-        if (overlay) {
-            const title = overlay.querySelector('h3').textContent;
-            const desc = overlay.querySelector('p').textContent;
-            lightboxCaption.innerHTML = `<strong>${title}</strong><br>${desc}`;
-        }
-    });
-});
-
-// Close lightbox
-closeLightbox.addEventListener('click', function() {
-    lightbox.classList.remove('active');
-});
-
-lightbox.addEventListener('click', function(e) {
-    if (e.target === lightbox) {
-        lightbox.classList.remove('active');
-    }
-});
-
-// Close lightbox with Escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && lightbox.classList.contains('active')) {
-        lightbox.classList.remove('active');
-    }
-});
-
-// Photo upload preview
-const photoUpload = document.getElementById('photo-upload');
-const photoPreview = document.getElementById('photo-preview');
-
-photoUpload.addEventListener('change', function(e) {
-    photoPreview.innerHTML = '';
-    const files = e.target.files;
-
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        if (file.type.startsWith('image/')) {
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.style.maxWidth = '100%';
-                img.style.marginBottom = '10px';
-                img.style.borderRadius = '5px';
-                photoPreview.appendChild(img);
-            };
-
-            reader.readAsDataURL(file);
-        }
-    }
-});
-
-// Video upload preview
-const videoUpload = document.getElementById('video-upload');
-const videoPreview = document.getElementById('video-preview');
-
-videoUpload.addEventListener('change', function(e) {
-    videoPreview.innerHTML = '';
-    const file = e.target.files[0];
-
-    if (file && file.type.startsWith('video/')) {
-        const reader = new FileReader();
-
-        reader.onload = function(e) {
-            const video = document.createElement('video');
-            video.src = e.target.result;
-            video.controls = true;
-            video.style.maxWidth = '100%';
-            video.style.borderRadius = '5px';
-            videoPreview.appendChild(video);
-        };
-
-        reader.readAsDataURL(file);
-    }
-});
-
-// Add photo to gallery
-function addPhoto() {
-    const photoUpload = document.getElementById('photo-upload');
-    const photoTitle = document.getElementById('photo-title');
-    const photoCategory = document.getElementById('photo-category');
-    const photoGallery = document.getElementById('photo-gallery');
-
-    if (!photoUpload.files.length) {
-        alert('Please select at least one photo to upload.');
-        return;
-    }
-
-    const title = photoTitle.value || 'Untitled Photo';
-    const category = photoCategory.value;
-    const files = photoUpload.files;
-
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-
-        if (file.type.startsWith('image/')) {
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                const photoItem = document.createElement('div');
-                photoItem.className = 'photo-item';
-                photoItem.setAttribute('data-category', category);
-
-                photoItem.innerHTML = `
-                    <img src="${e.target.result}" alt="${title}">
-                    <div class="photo-overlay">
-                        <h3>${title}</h3>
-                        <p>${category.charAt(0).toUpperCase() + category.slice(1)}</p>
-                    </div>
-                `;
-
-                // Add click event for lightbox
-                photoItem.addEventListener('click', function() {
-                    const img = this.querySelector('img');
-                    const overlay = this.querySelector('.photo-overlay');
-
-                    lightbox.classList.add('active');
-                    lightboxImg.src = img.src;
-
-                    if (overlay) {
-                        const title = overlay.querySelector('h3').textContent;
-                        const desc = overlay.querySelector('p').textContent;
-                        lightboxCaption.innerHTML = `<strong>${title}</strong><br>${desc}`;
-                    }
-                });
-
-                photoGallery.appendChild(photoItem);
-
-                // Animate the new photo
-                setTimeout(() => {
-                    photoItem.style.opacity = '1';
-                    photoItem.style.transform = 'scale(1)';
-                }, 10);
-            };
-
-            reader.readAsDataURL(file);
-        }
-    }
-
-    // Clear the form
-    photoUpload.value = '';
-    photoTitle.value = '';
-    photoPreview.innerHTML = '';
-
-    // Show success message
-    showMessage('Photo(s) added successfully! 📷');
-
-    // Scroll to photo gallery
-    document.getElementById('photos').scrollIntoView({ behavior: 'smooth' });
+﻿const yearNode = document.getElementById('year');
+if (yearNode) {
+  yearNode.textContent = `Copyright ${new Date().getFullYear()} FAST BREAK. All rights reserved.`;
 }
 
-// Add video to gallery
-function addVideo() {
-    const videoUpload = document.getElementById('video-upload');
-    const videoUrl = document.getElementById('video-url');
-    const videoTitle = document.getElementById('video-title');
-    const videoGallery = document.querySelector('.video-grid');
+const heroImages = [
+  {
+    name: 'Giannis Antetokounmpo',
+    team: 'Milwaukee Bucks',
+    number: '34',
+    year: '2018',
+    url: 'https://commons.wikimedia.org/wiki/Special:FilePath/Giannis%20Antetokounmpo%20%2839004611954%29.jpg',
+    position: '52% center',
+  },
+  {
+    name: 'Austin Reaves',
+    team: 'Los Angeles Lakers',
+    number: '15',
+    year: '2022',
+    url: 'https://commons.wikimedia.org/wiki/Special:FilePath/Austin%20Reaves.jpg',
+    position: '50% center',
+  },
+  {
+    name: 'LeBron James',
+    team: 'Los Angeles Lakers',
+    number: '23',
+    year: '2018',
+    url: 'https://commons.wikimedia.org/wiki/Special:FilePath/LeBron%20James%20Lakers.jpg',
+    position: '50% center',
+  },
+        {
+    name: 'Luka Doncic',
+    team: 'Los Angeles Lakers',
+    number: '77',
+    year: '2025',
+    url: 'https://images2.minutemediacdn.com/image/upload/c_crop%2Cw_7764%2Ch_4367%2Cx_0%2Cy_0/c_fill%2Cw_720%2Car_16%3A9%2Cf_auto%2Cq_auto%2Cg_auto/images/ImagnImages/mmsport/fastbreak/01jkw191b6zft3xzt6k4.jpg',
+    position: '50% center',
+  },{
+    name: 'Jalen Brunson',
+    team: 'New York Knicks',
+    number: '11',
+    year: '2023',
+    url: 'https://commons.wikimedia.org/wiki/Special:FilePath/Jalen%20Brunson.jpg',
+    position: '50% center',
+  },
+  {
+    name: 'Stephen Curry',
+    team: 'Golden State Warriors',
+    number: '30',
+    year: '2016',
+    url: 'https://commons.wikimedia.org/wiki/Special:FilePath/Stephen%20Curry%20shooting.jpg',
+    position: '50% center',
+  },
+  {
+    name: 'Victor Wembanyama',
+    team: 'San Antonio Spurs',
+    number: '1',
+    year: '2024',
+    url: 'https://commons.wikimedia.org/wiki/Special:FilePath/Victor%20Wembanyama%20San%20Antonio%20Spurs%202024.jpg',
+    position: '52% center',
+  },
+  {
+    name: 'Jaylen Brown',
+    team: 'Boston Celtics',
+    number: '7',
+    year: '2022',
+    url: 'https://commons.wikimedia.org/wiki/Special:FilePath/Jaylen%20Brown%20%2851840869654%29.jpg',
+    position: '50% center',
+  },
+    {
+    name: 'Kevin Durant',
+    team: 'Houston Rockets',
+    number: '7',
+    year: '2025',
+    url: 'https://images.fineartamerica.com/images/artworkimages/mediumlarge/3/kevin-durant-grant-burke.jpg',
+    position: '50% center',
+  },
+        {
+    name: 'James Harden',
+    team: 'Cleveland Cavaliers',
+    number: '1',
+    year: '2026',
+    url: 'https://images2.minutemediacdn.com/image/upload/c_crop%2Cx_0%2Cy_0%2Cw_5352%2Ch_3010/c_fill%2Cw_720%2Car_16%3A9%2Cf_auto%2Cq_auto%2Cg_auto/images/ImagnImages/mmsport/cavs_insider/01kh5024q40vcsj7mkgd.jpg',
+    position: '50% center',
+  },
+  {
+    name: 'Jayson Tatum',
+    team: 'Boston Celtics',
+    number: '0',
+    year: '2018',
+    url: 'https://commons.wikimedia.org/wiki/Special:FilePath/Jayson%20Tatum%20%282018%29.jpg',
+    position: '50% center',
+  },
+    {
+    name: 'Kyrie Irving',
+    team: 'Dallas Mavericks',
+    number: '11',
+    year: '2025',
+    url: 'https://images.fineartamerica.com/images/artworkimages/mediumlarge/3/kyrie-irving-chris-schwegler.jpg',
+    position: '50% center',
+  },
+        {
+    name: 'Anthony Edwards',
+    team: 'Minnesota Timberwolves',
+    number: '5',
+    year: '2021',
+    url: 'https://commons.wikimedia.org/wiki/Special:FilePath/Anthony%20Edwards%20Kentavious%20Caldwell-Pope%20%2851734745028%29.jpg',
+    position: '46% center',
+  },
+];
 
-    const title = videoTitle.value || 'Untitled Video';
+const bgLayers = document.querySelectorAll('.hero-bg-image');
+const labelNode = document.getElementById('hero-player-label');
 
-    // Check if it's a file upload or URL
-    if (videoUpload.files.length > 0) {
-        const file = videoUpload.files[0];
-
-        if (file.type.startsWith('video/')) {
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                const videoItem = document.createElement('div');
-                videoItem.className = 'video-item';
-
-                videoItem.innerHTML = `
-                    <video controls>
-                        <source src="${e.target.result}" type="${file.type}">
-                        Your browser does not support the video tag.
-                    </video>
-                    <h3>${title}</h3>
-                `;
-
-                videoGallery.appendChild(videoItem);
-            };
-
-            reader.readAsDataURL(file);
-        }
-    } else if (videoUrl.value.trim() !== '') {
-        const url = videoUrl.value.trim();
-        let embedUrl = url;
-
-        // Convert YouTube URL to embed format
-        if (url.includes('youtube.com') || url.includes('youtu.be')) {
-            let videoId = '';
-            if (url.includes('youtube.com')) {
-                const urlParams = new URLSearchParams(new URL(url).search);
-                videoId = urlParams.get('v');
-            } else if (url.includes('youtu.be')) {
-                videoId = url.split('/').pop().split('?')[0];
-            }
-            embedUrl = `https://www.youtube.com/embed/${videoId}`;
-        }
-
-        const videoItem = document.createElement('div');
-        videoItem.className = 'video-item';
-
-        videoItem.innerHTML = `
-            <iframe src="${embedUrl}" allowfullscreen></iframe>
-            <h3>${title}</h3>
-        `;
-
-        videoGallery.appendChild(videoItem);
-    } else {
-        alert('Please select a video file or enter a video URL.');
-        return;
-    }
-
-    // Clear the form
-    videoUpload.value = '';
-    videoUrl.value = '';
-    videoTitle.value = '';
-    videoPreview.innerHTML = '';
-
-    // Show success message
-    showMessage('Video added successfully! 🎥');
-
-    // Scroll to video gallery
-    document.getElementById('videos').scrollIntoView({ behavior: 'smooth' });
+function applySlide(layer, slide) {
+  layer.style.backgroundImage = `url("${slide.url}")`;
+  layer.style.backgroundPosition = slide.position || 'center center';
 }
 
-// Show success message
-function showMessage(message) {
-    const messageDiv = document.createElement('div');
-    messageDiv.style.cssText = `
-        position: fixed;
-        top: 100px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #4CAF50;
-        color: white;
-        padding: 1rem 2rem;
-        border-radius: 5px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-        z-index: 1001;
-        animation: slideDown 0.3s ease;
-    `;
-    messageDiv.textContent = message;
-
-    document.body.appendChild(messageDiv);
-
-    setTimeout(() => {
-        messageDiv.style.animation = 'slideUp 0.3s ease';
-        setTimeout(() => {
-            document.body.removeChild(messageDiv);
-        }, 300);
-    }, 3000);
+function updateLabel(slide) {
+  if (!labelNode || !slide) {
+    return;
+  }
+  labelNode.textContent = `${slide.name} - ${slide.team} (${slide.year}) (#${slide.number})`;
 }
 
-// Add CSS animations for messages
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideDown {
-        from {
-            top: -100px;
-            opacity: 0;
-        }
-        to {
-            top: 100px;
-            opacity: 1;
-        }
-    }
+if (bgLayers.length === 2 && heroImages.length > 0) {
+  let photoIndex = 0;
+  let activeLayer = 0;
 
-    @keyframes slideUp {
-        from {
-            top: 100px;
-            opacity: 1;
-        }
-        to {
-            top: -100px;
-            opacity: 0;
-        }
-    }
+  applySlide(bgLayers[0], heroImages[0]);
+  bgLayers[0].classList.add('is-visible');
+  updateLabel(heroImages[0]);
 
-    .photo-item,
-    .video-item {
-        opacity: 0;
-        transform: scale(0.8);
-        transition: all 0.3s ease;
-    }
+  if (heroImages.length > 1) {
+    applySlide(bgLayers[1], heroImages[1]);
 
-    .photo-item,
-    .video-item {
-        opacity: 1;
-        transform: scale(1);
-    }
-`;
-document.head.appendChild(style);
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion) {
+      window.setInterval(() => {
+        photoIndex = (photoIndex + 1) % heroImages.length;
+        const nextLayer = 1 - activeLayer;
 
-// Initialize: Show all photos on load
-document.addEventListener('DOMContentLoaded', function() {
-    photoItems.forEach(item => {
-        item.style.opacity = '1';
-        item.style.transform = 'scale(1)';
-    });
-});
+        applySlide(bgLayers[nextLayer], heroImages[photoIndex]);
+        bgLayers[nextLayer].classList.add('is-visible');
+        bgLayers[activeLayer].classList.remove('is-visible');
+        updateLabel(heroImages[photoIndex]);
+
+        activeLayer = nextLayer;
+      }, 4000);
+    }
+  }
+}
+
+
+
+
+
+
