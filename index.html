@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basketball Brothers - Gallery</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🏀 Basketball Brothers</h1>
+            <p class="tagline">Capturing Every Moment on the Court</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#photos">Photo Gallery</a></li>
+                <li><a href="#videos">Video Gallery</a></li>
+                <li><a href="#upload">Upload Media</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <h2>Welcome to Basketball Brothers</h2>
+            <p>Share your basketball journey through photos and videos!</p>
+        </section>
+
+        <!-- Photo Gallery Section -->
+        <section id="photos" class="gallery-section">
+            <h2>Photo Gallery</h2>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Photos</button>
+                <button class="filter-btn" data-filter="games">Games</button>
+                <button class="filter-btn" data-filter="training">Training</button>
+                <button class="filter-btn" data-filter="team">Team</button>
+            </div>
+            <div id="photo-gallery" class="photo-grid">
+                <!-- Sample photos - these will be dynamically added -->
+                <div class="photo-item" data-category="games">
+                    <img src="https://via.placeholder.com/400x300/FF6B35/FFFFFF?text=Game+Action" alt="Game Action">
+                    <div class="photo-overlay">
+                        <h3>Championship Game</h3>
+                        <p>2024 Finals</p>
+                    </div>
+                </div>
+                <div class="photo-item" data-category="training">
+                    <img src="https://via.placeholder.com/400x300/004E89/FFFFFF?text=Training+Session" alt="Training">
+                    <div class="photo-overlay">
+                        <h3>Practice Makes Perfect</h3>
+                        <p>Morning Drills</p>
+                    </div>
+                </div>
+                <div class="photo-item" data-category="team">
+                    <img src="https://via.placeholder.com/400x300/F77F00/FFFFFF?text=Team+Photo" alt="Team Photo">
+                    <div class="photo-overlay">
+                        <h3>Brothers Together</h3>
+                        <p>Season 2024</p>
+                    </div>
+                </div>
+                <div class="photo-item" data-category="games">
+                    <img src="https://via.placeholder.com/400x300/FF6B35/FFFFFF?text=Dunk+Shot" alt="Dunk">
+                    <div class="photo-overlay">
+                        <h3>Epic Dunk</h3>
+                        <p>Highlight Reel</p>
+                    </div>
+                </div>
+                <div class="photo-item" data-category="training">
+                    <img src="https://via.placeholder.com/400x300/004E89/FFFFFF?text=Skills+Training" alt="Skills">
+                    <div class="photo-overlay">
+                        <h3>Skills Development</h3>
+                        <p>Shooting Practice</p>
+                    </div>
+                </div>
+                <div class="photo-item" data-category="team">
+                    <img src="https://via.placeholder.com/400x300/F77F00/FFFFFF?text=Team+Huddle" alt="Huddle">
+                    <div class="photo-overlay">
+                        <h3>Team Huddle</h3>
+                        <p>Pre-game Motivation</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Video Gallery Section -->
+        <section id="videos" class="gallery-section">
+            <h2>Video Gallery</h2>
+            <div class="video-grid">
+                <div class="video-item">
+                    <div class="video-placeholder">
+                        <svg width="100" height="100" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" fill="#FF6B35"/>
+                            <polygon points="40,30 40,70 70,50" fill="white"/>
+                        </svg>
+                        <p>Add your game highlights</p>
+                    </div>
+                    <h3>Game Highlights</h3>
+                </div>
+                <div class="video-item">
+                    <div class="video-placeholder">
+                        <svg width="100" height="100" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" fill="#004E89"/>
+                            <polygon points="40,30 40,70 70,50" fill="white"/>
+                        </svg>
+                        <p>Share training videos</p>
+                    </div>
+                    <h3>Training Sessions</h3>
+                </div>
+                <div class="video-item">
+                    <div class="video-placeholder">
+                        <svg width="100" height="100" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" fill="#F77F00"/>
+                            <polygon points="40,30 40,70 70,50" fill="white"/>
+                        </svg>
+                        <p>Upload trick shots</p>
+                    </div>
+                    <h3>Trick Shots</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upload Section -->
+        <section id="upload" class="upload-section">
+            <h2>Upload Media</h2>
+            <div class="upload-container">
+                <div class="upload-box">
+                    <h3>📷 Upload Photos</h3>
+                    <input type="file" id="photo-upload" accept="image/*" multiple>
+                    <label for="photo-upload" class="upload-btn">Choose Photos</label>
+                    <div class="upload-info">
+                        <label for="photo-title">Title:</label>
+                        <input type="text" id="photo-title" placeholder="Enter photo title">
+                        <label for="photo-category">Category:</label>
+                        <select id="photo-category">
+                            <option value="games">Games</option>
+                            <option value="training">Training</option>
+                            <option value="team">Team</option>
+                        </select>
+                        <button onclick="addPhoto()" class="add-btn">Add to Gallery</button>
+                    </div>
+                    <div id="photo-preview" class="preview-area"></div>
+                </div>
+
+                <div class="upload-box">
+                    <h3>🎥 Add Video</h3>
+                    <input type="file" id="video-upload" accept="video/*">
+                    <label for="video-upload" class="upload-btn">Choose Video</label>
+                    <div class="upload-info">
+                        <label for="video-url">Or paste YouTube/Video URL:</label>
+                        <input type="text" id="video-url" placeholder="https://youtube.com/watch?v=...">
+                        <label for="video-title">Title:</label>
+                        <input type="text" id="video-title" placeholder="Enter video title">
+                        <button onclick="addVideo()" class="add-btn">Add to Gallery</button>
+                    </div>
+                    <div id="video-preview" class="preview-area"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Basketball Brothers. All rights reserved.</p>
+            <p>Keep ballin'! 🏀</p>
+        </div>
+    </footer>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox">
+        <span class="close-lightbox">&times;</span>
+        <img class="lightbox-content" id="lightbox-img">
+        <div id="lightbox-caption"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
